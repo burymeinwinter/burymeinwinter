@@ -1,0 +1,33 @@
+#https://developers.arcgis.com/javascript/latest/sample-code/custom-gl-visuals/
+
+
+
+
+const CustomLayer = GraphicsLayer.createSubclass({
+  createLayerView: function(view) {
+    // We only support MapView, so we only need to return a
+    // custom layer view for the `2d` case.
+    if (view.type === "2d") {
+      return new CustomLayerView2D({
+        view: view,
+        layer: this
+      });
+    }
+  }
+});
+
+
+// Called internally from render().
+  updatePositions: function (renderParameters) {
+    ...
+  }
+});
+
+
+const gl = renderParameters.context;
+const state = renderParameters.state;
+
+this.updatePositions(renderParameters);
+
+
+this.requestRender();
