@@ -6,7 +6,7 @@
 #"Be me, a little while."
 
 -->
-> "for, as no mortal hand had ever disturbed them in their remote and gloomy shades, they were strangers to fear."
+> "for as no mortal hand had ever disturbed them in their remote and gloomy shades, they were strangers to fear."
 
 <!---
 burymeinwinter/burymeinwinter is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
