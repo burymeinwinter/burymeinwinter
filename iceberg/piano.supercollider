@@ -14,7 +14,11 @@ SynthDef(\playcuedBuf,{ arg out = 0, bufnum;
 
 x = Synth(\playcuedBuf, [\bufnum, b]);
 
+
+y =
+
 x.free;
+y.free;
 
 
 
