@@ -20,6 +20,8 @@ y =
 x.free;
 y.free;
 
+x.play;
+
 
 
 
