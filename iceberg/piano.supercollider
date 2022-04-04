@@ -3,6 +3,24 @@ loop
 
 
 
+// We still need a buffer (but we are cueing it, i.e. not filling)
+b = Buffer.cueSoundFile(s, Platform.resourceDir +/+ "sounds/a11wlk01-44_1.aiff", 0, 1);
+
+SynthDef(\playcuedBuf,{ arg out = 0, bufnum;
+    var signal;
+    signal = DiskIn.ar(1, bufnum, loop:1);
+    Out.ar(out, signal ! 2)
+}).add;
+
+x = Synth(\playcuedBuf, [\bufnum, b]);
+
+x.free;
+
+
+
+
+
+
 // A simple web browser
 (
 var browser, webview, reloadStop, prev, next, urlBox, go;
