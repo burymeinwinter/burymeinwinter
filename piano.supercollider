@@ -2,53 +2,125 @@ src piano9intro
 loop
 
 
-<CsoundSynthesizer>
-<CsOptions>
--odac -d
-</CsOptions>
-<html>
-<head> </head>
-<body bgcolor="lightblue">
-<script>
-function onGetControlChannel(value) {
-document.getElementById(
-'testChannel'
-).innerHTML = value;
-} // to test csound.getControlChannel with QtWebEngine
-</script>
-<h2>Minimal Csound-Html5 example</h2>
-<br />
-<br />
-Frequency:
-<input
-type="range"
-id="slider"
-oninput='csound.setControlChannel("testChannel",this.value/100.0); '
-/>
-<br />
-<button
-id="button"
-onclick='csound.readScore("i 1 0 3")'
->
-Event
-</button>
-<br /><br />
-Get channel from csound with callback (QtWebchannel):
-<label id="getchannel"></label>
-<button
-onclick='csound.getControlChannel("testChannel", onGetControlChannel)'
->
-Get</button
-><br />
-Value from channel "testChannel":
-<label id="testChannel"></label><br />
-<br />
-Get as return value (QtWebkit)
-<button
-onclick='alert("TestChannel: "+csound.getControlChannel("testChannel"))'
->
-Get as retrun value
-</button>
+
+// A simple web browser
+(
+var browser, webview, reloadStop, prev, next, urlBox, go;
+
+webview = WebView()
+    .minSize_(300@200);
+reloadStop = Button()
+    .states_([["※"], ["◙"]])
+    .fixedSize_(36@28);
+prev = Button()
+    .states_([["⇦"]])
+    .fixedSize_(36@28);
+next = Button()
+    .states_([["⇨"]])
+    .fixedSize_(36@28);
+urlBox = TextField()
+    .minWidth_(100);
+go = Button()
+    .states_([["⌘"]])
+    .fixedSize_(36@28);
+
+reloadStop.action = {
+    |v|
+    if (v.value == 1) {
+        webview.reload(true);
+    } {
+        webview.stop;
+    }
+};
+
+prev.action = { webview.back };
+next.action = { webview.forward };
+urlBox.action = { webview.url = urlBox.string };
+go.action = { webview.url = urlBox.string };
+
+webview.onUrlChanged = {
+    |view, url|
+    urlBox.string = url;
+};
+
+webview.onLoadStarted = {
+    reloadStop.value = 1;
+    urlBox.background = Color.grey(0.4);
+};
+
+webview.onLoadFinished = {
+    reloadStop.value = 0;
+    urlBox.background = Color.grey(0.2);
+};
+
+webview.onLoadFailed = {
+    reloadStop.value = 0;
+    urlBox.background = Color.red(1, 0.2);
+};
+
+browser = View(bounds:900@700).layout_(VLayout(
+    HLayout(
+        prev, reloadStop, next,
+        urlBox,
+        go
+    ),
+    webview
+));
+
+browser.front;
+
+urlBox.valueAction = "http://supercollider.github.io/"
+)
 
 
 
+
+
+
+
+
+
+
+
+
+(
+var start = 0.404561, end = 3.185917,
+beatsInLoop = 4,
+originalTempo = beatsInLoop / (end - start);
+
+TempoClock.tempo = originalTempo;
+
+p = Pbind(
+    \instrument, \oneLoop,
+    \bufnum, b,
+    \amp, 0.4,
+    \start, start * b.sampleRate,
+    \dur, beatsInLoop,
+    \time, Pkey(\dur) / Pfunc { thisThread.clock.tempo },
+    \rate, Pfunc { thisThread.clock.tempo / originalTempo }
+).play(quant: [4, 3.5]);
+
+q = Pn(
+    Pfindur(4,
+        Pbind(
+            \instrument, \bell,
+            \accent, Pseq([2, Pn(0, inf)], 1),
+            \amp, Pseq([0.3, Pn(0.1, inf)], 1),
+            \decayScale, Pseq([6, Pn(1, inf)], 1),
+            \dur, Pwrand(#[0.25, 0.5, 0.75, 1], #[2, 3, 1, 1].normalizeSum, inf)
+        )
+    ),
+inf).play(quant: [4, 4]);
+
+r = Pbind(
+    \instrument, \bell,
+    \accent, -0.6,
+    \amp, 0.2,
+    \decayScale, 0.1,
+    \dur, 1
+).play(quant: [4, 4]);
+)
+
+[p, q, r].do(_.stop);
+
+b.free;
