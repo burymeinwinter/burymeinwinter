@@ -49,8 +49,6 @@ onclick='alert("TestChannel: "+csound.getControlChannel("testChannel"))'
 >
 Get as retrun value
 </button>
-<br />
-</body>
-</html>
-<CsInstruments>
-sr = 44100
+
+
+
